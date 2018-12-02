@@ -1,0 +1,15 @@
+{% extends 'base.html'%}
+
+{% load humanize %}
+{% load comments %}
+
+{% block content %}
+
+    <a href="{{ object.url }}">{{ object.title }} </a>
+    <br>
+    <br>
+
+    {% render_comment_list for object %}
+   {% get_comment_form for event as form %}
+
+{% endblock %}

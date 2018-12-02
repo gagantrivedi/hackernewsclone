@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% load humanize %}
+{% load vote_tags %}
+
+{% block content %}
+    <h2>Hackpy</h2>
+
+    <ol start="{{ post_rank }}">
+
+
+        {% for post in object_list %}
+            <li>
+                <a href="{{ post.url }}">{{ post.title }} </a>
+                <br>
+                {{ post.created_at | timesince }} ago
+                {{ post.total_votes }} votes
+                <a href="{% url 'details' post.pk %}">{{ post.total_comments }} comments</a>
+                {% if  post|is_upvoted:request.user %}
+                    <a href="{% url 'vote' %}?action=downvote&post_id={{ post.id }}">downvote</a>
+                {% else %}
+                    <a href="{% url 'vote' %}?action=upvote&post_id={{ post.id }}">upvote</a>
+                {% endif %}
+                <br>
+            </li>
+        {% endfor %}
+    </ol>
+
+
+    {% if is_paginated %}
+        <ul class="pagination">
+            {% if page_obj.has_previous %}
+                <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+            {% else %}
+                <li class="disabled"><span>&laquo;</span></li>
+            {% endif %}
+            {% for i in paginator.page_range %}
+                {% if page_obj.number == i %}
+                    <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+                {% else %}
+                    <li><a href="?page={{ i }}">{{ i }}</a></li>
+                {% endif %}
+            {% endfor %}
+            {% if page_obj.has_next %}
+                <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+            {% else %}
+                <li class="disabled"><span>&raquo;</span></li>
+            {% endif %}
+        </ul>
+    {% endif %}
+
+{% endblock %}
